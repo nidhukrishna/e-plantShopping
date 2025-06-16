@@ -38,14 +38,18 @@ const CartItem = ({ onContinueShopping }) => {
   };
 
   const handleContinueShopping = () => {
-    onContinueShopping(); // Go back to ProductList
+    window.location.reload(); // Go back to ProductList
   };
+
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
 
   return (
     <div className="cart-container">
-      <h2 style={{ color: 'black' }}>
-        Total Cart Amount: ${calculateTotalAmount()}
-      </h2>
+<h2 style={{ color: 'black' }}>
+  Cart: {totalItems} item{totalItems !== 1 ? 's' : ''} — Total Amount: ${calculateTotalAmount()}
+</h2>
+
 
       <div>
         {cart.map((item) => (
