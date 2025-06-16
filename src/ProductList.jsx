@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css'
+import { useDispatch } from 'react-redux';
+import { addItem } from './CartSlice';
 import CartItem from './CartItem';
 function ProductList({ onHomeClick }) {
+    const dispatch = useDispatch();
     const [showCart, setShowCart] = useState(false);
-    const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+    const [showPlants, setShowPlants] = useState(false);
+    const [addedToCart, setAddedToCart] = useState({}); // State to control the visibility of the About Us page
+
+    const handleAddToCart = (plant) => {
+        dispatch(addItem({ ...plant, quantity: 1 }));
+        setAddedToCart((prev) => ({ ...prev, [plant.name]: true }));
+    };
 
     const plantsArray = [
         {
@@ -273,10 +282,56 @@ function ProductList({ onHomeClick }) {
                 </div>
             </div>
             {!showCart ? (
-                <div className="product-grid">
-
-
-                </div>
+    <div className="product-grid">
+      {plantsArray.map((section) => (
+        <div key={section.category} className="plantname_heading">
+          <div className="plant_heading">
+            <h2>{section.category}</h2>
+          </div>
+          <div
+            className="product-section"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+              gap: "20px",
+              width: "100%",
+              maxWidth: "1200px",
+              padding: "20px",
+              boxSizing: "border-box"
+            }}
+          >
+            {section.plants.map((plant) => (
+              <div
+  className="product-card"
+  key={plant.name}
+  style={{
+    minWidth: "220px",
+    maxWidth: "250px",
+    margin: "auto"
+  }}
+>
+  <img
+    className="product-image"
+    src={plant.image}
+    alt={plant.name}
+    style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "5px" }}
+  />
+  <h3 className="product-title">{plant.name}</h3>
+  <p>{plant.description}</p>
+  <p className="product-price">{plant.cost}</p>
+  <button
+    className={`product-button ${addedToCart[plant.name] ? 'added-to-cart' : ''}`}
+    onClick={() => handleAddToCart(plant)}
+    disabled={addedToCart[plant.name]}
+  >
+    {addedToCart[plant.name] ? "Added to Cart" : "Add to Cart"}
+  </button>
+</div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
             ) : (
                 <CartItem onContinueShopping={handleContinueShopping} />
             )}
